@@ -1,0 +1,6 @@
+---
+names:
+  - "folder"
+parent:
+  id: ""
+  type: "" # can be one of 'organizations' or 'folders', depending on where the deployment should be rooted

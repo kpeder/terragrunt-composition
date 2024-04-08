@@ -1,0 +1,14 @@
+---
+golang_runtime_version: "1.21"
+google_provider_version: "4.84"
+
+terraform_binary_version: "1.7"
+terraform_install_version: "1.7.4"
+
+terragrunt_binary_version: "0.55"
+terragrunt_install_version: "0.55.16"
+
+google_module_folder: "v4.0.0"
+google_module_project: "v14.3.0"
+google_module_iam: "v7.7.0"
+google_module_storage: "v5.0.0"
