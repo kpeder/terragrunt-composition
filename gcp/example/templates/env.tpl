@@ -5,10 +5,6 @@ labels:
   environment: ENVIRONMENT
   owner: OWNER
   team: TEAM
-locations:
-  multiregion: MREGION
-  primary: PREGION
-  secondary: SREGION
 
 dependencies:
   example_folder_dependency_path: "global/folders/example"

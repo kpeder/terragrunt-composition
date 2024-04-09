@@ -1,4 +1,4 @@
 ---
 region: "MREGION"
 location: "MREGION"
-storage_class: "MULTI_REGIONAL"
+storage_class: "STANDARD"
