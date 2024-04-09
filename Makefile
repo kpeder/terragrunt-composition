@@ -36,7 +36,7 @@ gcp_example_deploy: gcp_example_configure gcp_example_init
 .PHONY: gcp_example_init
 gcp_example_init: gcp_example_configure
 	@cd gcp/example && terragrunt run-all init
-	@cd gcp/example/test && go mod init deployment_test.go; go mod tidy
+	@cd gcp/example/test && go mod init gcp_example_test.go; go mod tidy
 
 .PHONY: gcp_example_install
 gcp_example_install:
