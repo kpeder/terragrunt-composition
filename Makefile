@@ -53,5 +53,5 @@ gcp_example_plan: gcp_example_configure gcp_example_init
 	@cd gcp/example && terragrunt run-all plan
 
 .PHONY: gcp_example_test
-gcp_example_test: gcp_example_configure gcp_example_lint gcp_example_init
+gcp_example_test: gcp_example_configure gcp_example_lint
 	@cd gcp/example/test && go test -v -destroy
