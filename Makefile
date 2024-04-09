@@ -3,19 +3,22 @@ help:
 	@echo 'make <target>'
 	@echo ''
 	@echo 'Targets:'
+	@echo '    help                  Show this help'
+	@echo '    pre-commit            Run pre-commit checks'
 	@echo ''
-	@echo '    help    Show this help'
-	@echo ''
-	@echo '# GCP Deployment Targets'
 	@echo '    gcp_example_clean     Clean up state files'
 	@echo '    gcp_example_configure Configure the deployment'
 	@echo '    gcp_example_deploy    Deploy configured resources'
 	@echo '    gcp_example_init      Initialize modules, providers'
 	@echo '    gcp_example_install   Install Terraform, Terragrunt'
-	@echo '    gcp_example_lint      Run linters'
+	@echo '    gcp_example_lint      Run Go linters'
 	@echo '    gcp_example_plan      Show deployment plan'
-	@echo '    gcp_example_test      Run tests'
+	@echo '    gcp_example_test      Run deployment tests'
 	@echo ''
+
+.PHONY: pre-commit
+pre-commit:
+	@pre-commit run -a
 
 .PHONY: gcp_example_clean
 gcp_example_clean:
@@ -42,7 +45,7 @@ gcp_example_install:
 	@sudo ./scripts/install_terragrunt.sh -v ./gcp/example/versions.yaml
 
 .PHONY: gcp_example_lint
-gcp_example_lint: gcp_example_configure
+gcp_example_lint: gcp_example_configure gcp_example_init
 	@cd gcp/example/test && golangci-lint run --print-linter-name --verbose gcp_example_test.go
 
 .PHONY: gcp_example_plan
