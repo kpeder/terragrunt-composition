@@ -31,7 +31,7 @@ terragrunt
 ### Deployment
 Automated installation configuration, and deployment steps are managed using Makefile targets. Use ```make help``` for a list of configured targets:
 ```
-$ make help 
+$ make help
 make <target>
 
 Targets:
