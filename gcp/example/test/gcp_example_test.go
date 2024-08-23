@@ -233,7 +233,7 @@ func TestTerragruntDeployment(t *testing.T) {
 		//		require.Equal(t, pregion["location"], outputs["location"])
 		// 2. Query the json string representing state returned by terraform.Show (ie. the output of "terragrunt show -json")
 		//		modulejson := gojsonq.New().JSONString(terraform.Show(t, terraformOptions)).From("values.root_module.resources").
-		//			Where("address", "eq", "azurerm_resource_group.main").
+		//			Where("address", "eq", "resource.this").
 		//			Select("values")
 		//		// Execute the above query; since it modifies the pointer we can only do this once, so we add it to a variable
 		//		values := modulejson.Get()
