@@ -1,0 +1,6 @@
+---
+subnets:
+  - name: "primary-a"
+    range: "10.0.4.0/22"
+  - name: "primary-b"
+    range: "10.0.12.0/22"
