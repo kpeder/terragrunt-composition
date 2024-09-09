@@ -3,5 +3,6 @@ billing_account: "" # gcp billing account to link to created projects
 build_project: ""   # gcp project in which to deploy state buckets and build pipelines
 organization_id: "" # gcp organization id where resources will be created
 prefix: ""          # prefix to use to uniquely identify and name resources managed under this structure, should be 3-5 characters in length
-parent_type: ""     # can be one of 'organizations' or 'folders', depending on where the deployment should be rooted
-parent_id: ""       # the id of the organization or folder in which to root the deployment
+parent:
+  type: ""          # can be one of 'organizations' or 'folders', depending on where the deployment should be rooted
+  id: ""            # the id of the organization or folder in which to root the deployment
