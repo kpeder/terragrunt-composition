@@ -67,6 +67,9 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["1-exampleProject"] = "../global/projects/example"
 	moddirs["2-exampleAuditConfig"] = "../global/audit-configs/example"
 	moddirs["2-exampleStorageBucket"] = "../reg-multi/buckets/example"
+	moddirs["2-privateNetwork"] = "../global/networks/private"
+	moddirs["3-primaryPrivateSubnet"] = "../reg-primary/subnets/private"
+	moddirs["3-secondaryPrivateSubnet"] = "../reg-secondary/subnets/private"
 
 	// Maps are unsorted, so sort the keys to process the modules in order
 	modkeys := make([]string, 0, len(moddirs))
@@ -256,8 +259,23 @@ func TestTerragruntDeployment(t *testing.T) {
 			// Make sure that prevent_destroy is set to false
 			assert.Contains(t, hclstring, "prevent_destroy = false")
 
-		// Example project module
+		// Example storage bucket module
 		case "2-exampleStorageBucket":
+			// Make sure that prevent_destroy is set to false
+			assert.Contains(t, hclstring, "prevent_destroy = false")
+
+		// Private network module
+		case "2-privateNetwork":
+			// Make sure that prevent_destroy is set to false
+			assert.Contains(t, hclstring, "prevent_destroy = false")
+
+		// Primary private subnet module
+		case "3-primaryPrivateSubnet":
+			// Make sure that prevent_destroy is set to false
+			assert.Contains(t, hclstring, "prevent_destroy = false")
+
+		// Secondary private subnet module
+		case "3-secondaryPrivateSubnet":
 			// Make sure that prevent_destroy is set to false
 			assert.Contains(t, hclstring, "prevent_destroy = false")
 

@@ -17,3 +17,8 @@ dependencies:
     project_id: "PREFIX-ENVIRONMENT-example"
     project_name: "PREFIX-ENVIRONMENT-example"
     project_number: "123456789012"
+
+  private_network_dependency_path: "global/networks/private"
+  private_network_mock_outputs:
+    network_id: "PREFIX-ENVIRONMENT-private"
+    project_id: "PREFIX-ENVIRONMENT-example"

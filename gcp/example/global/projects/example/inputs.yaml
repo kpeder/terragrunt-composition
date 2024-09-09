@@ -21,4 +21,4 @@ default_service_account: "deprivilege"
 folder_id_override: ""
 project_id_override: ""
 project_name: "example"
-random_project_id: false
+random_project_id: true
