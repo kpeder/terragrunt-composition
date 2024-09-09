@@ -84,7 +84,7 @@ func TestTerragruntDeployment(t *testing.T) {
 			TerraformBinary: binary,
 		})
 
-		fmt.Println("Validating module:", module)
+		fmt.Printf("Validating module in %s\n", moddirs[module])
 
 		// Sanity test
 		terraform.Validate(t, terraformOptions)
@@ -193,7 +193,7 @@ func TestTerragruntDeployment(t *testing.T) {
 			TerraformBinary: binary,
 		})
 
-		fmt.Println("Testing module:", module)
+		fmt.Printf("Testing module in %s\n", moddirs[module])
 
 		// Read the provider output and verify configured version
 		providers := terraform.RunTerraformCommand(t, terraformOptions, terraform.FormatArgs(terraformOptions, "providers")...)
@@ -246,8 +246,26 @@ func TestTerragruntDeployment(t *testing.T) {
 
 		// Example folder module
 		case "0-exampleFolder":
+			// Log module entrypoint
+			t.Logf("Testing module in %s\n", moddirs[module])
+
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the folder count matches
+			if !assert.Equal(t, len(inputs["names"].([]interface{})), len(outputs["names_list"].([]interface{}))) {
+				t.Errorf("Folder count test FAILED. Expected %d, got %d", len(inputs["names"].([]interface{})), len(outputs["names_list"].([]interface{})))
+			}
+
+			// Make sure that all folder names contain prefix, environment and a configured name
+			for _, n := range inputs["names"].([]interface{}) {
+				name := fmt.Sprintf("%s-%s-%s", platform["prefix"].(string), env["environment"].(string), n)
+				if !assert.Contains(t, outputs["names_list"].([]interface{}), name) {
+					t.Errorf("Folder name test FAILED. Expected %s to contain %s", outputs["names_list"].([]interface{}), name)
+				}
+			}
 
 		// Example project module
 		case "1-exampleProject":
