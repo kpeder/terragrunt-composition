@@ -29,6 +29,8 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs := make(map[string]string)
 
 	// Non-local vars to evaluate state between modules
+	var network string
+	var project string
 
 	// Reusable vars for unmarshalling YAML files
 	var err error
@@ -300,6 +302,9 @@ func TestTerragruntDeployment(t *testing.T) {
 				}
 			}
 
+			// Store the project id
+			project = outputs["project_id"].(string)
+
 		// Example audit config module
 		case "2-exampleAuditConfig":
 			// Make sure that prevent_destroy is set to false
@@ -363,6 +368,20 @@ func TestTerragruntDeployment(t *testing.T) {
 				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
 			}
 
+			// Make sure the network name contains prefix, environment and a configured name
+			name := fmt.Sprintf("%s-%s-%s", platform["prefix"].(string), env["environment"].(string), inputs["name"].(string))
+			if !assert.Equal(t, outputs["network_name"].(string), name) {
+				t.Errorf("Network name test FAILED. Expected %s, got %s.", name, outputs["network_name"].(string))
+			}
+
+			// Make sure the network is deployed to the correct project
+			if !assert.Equal(t, outputs["project_id"].(string), project) {
+				t.Errorf("Parent project test FAILED. Expected %s, got %s.", project, outputs["project_id"].(string))
+			}
+
+			// Store the network id
+			network = outputs["network_id"].(string)
+
 		// Primary private subnet module
 		case "3-primaryPrivateSubnet":
 			// Make sure that prevent_destroy is set to false
@@ -370,11 +389,61 @@ func TestTerragruntDeployment(t *testing.T) {
 				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
 			}
 
+			// Make sure the subnets are properly configured
+			for _, subnet := range inputs["subnets"].([]interface{}) {
+				attributes := outputs["subnets"].(map[string]interface{})[pregion["region"].(string)+"/"+subnet.(map[string]interface{})["name"].(string)]
+
+				// They belong to the correct VPC network
+				if !assert.Contains(t, attributes.(map[string]interface{})["network"].(string), network) {
+					t.Errorf("Parent network test FAILED for subnet %s. Expected %s to contain %s.", subnet.(map[string]interface{})["name"].(string), attributes.(map[string]interface{})["network"].(string), network)
+				}
+
+				// They are correctly named
+				if !assert.Equal(t, attributes.(map[string]interface{})["name"].(string), subnet.(map[string]interface{})["name"].(string)) {
+					t.Errorf("Subnet name test FAILED. Expected %s, got %s.", subnet.(map[string]interface{})["name"].(string), attributes.(map[string]interface{})["name"].(string))
+				}
+
+				// They are correctly addressed
+				if !assert.Equal(t, attributes.(map[string]interface{})["ip_cidr_range"].(string), subnet.(map[string]interface{})["range"].(string)) {
+					t.Errorf("Subnet address test FAILED. Expected %s, got %s.", subnet.(map[string]interface{})["range"].(string), attributes.(map[string]interface{})["ip_cidr_range"].(string))
+				}
+
+				// They are deployed to the correct region
+				if !assert.Equal(t, attributes.(map[string]interface{})["region"].(string), pregion["region"].(string)) {
+					t.Errorf("Subnet region test FAILED. Expected %s, got %s.", pregion["region"].(string), attributes.(map[string]interface{})["region"].(string))
+				}
+			}
+
 		// Secondary private subnet module
 		case "3-secondaryPrivateSubnet":
 			// Make sure that prevent_destroy is set to false
 			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
 				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure the subnets are properly configured
+			for _, subnet := range inputs["subnets"].([]interface{}) {
+				attributes := outputs["subnets"].(map[string]interface{})[sregion["region"].(string)+"/"+subnet.(map[string]interface{})["name"].(string)]
+
+				// They belong to the correct VPC network
+				if !assert.Contains(t, attributes.(map[string]interface{})["network"].(string), network) {
+					t.Errorf("Parent network test FAILED for subnet %s. Expected %s to contain %s.", subnet.(map[string]interface{})["name"].(string), attributes.(map[string]interface{})["network"].(string), network)
+				}
+
+				// They are correctly named
+				if !assert.Equal(t, attributes.(map[string]interface{})["name"].(string), subnet.(map[string]interface{})["name"].(string)) {
+					t.Errorf("Subnet name test FAILED. Expected %s, got %s.", subnet.(map[string]interface{})["name"].(string), attributes.(map[string]interface{})["name"].(string))
+				}
+
+				// They are correctly addressed
+				if !assert.Equal(t, attributes.(map[string]interface{})["ip_cidr_range"].(string), subnet.(map[string]interface{})["range"].(string)) {
+					t.Errorf("Subnet address test FAILED. Expected %s, got %s.", subnet.(map[string]interface{})["range"].(string), attributes.(map[string]interface{})["ip_cidr_range"].(string))
+				}
+
+				// They are deployed to the correct region
+				if !assert.Equal(t, attributes.(map[string]interface{})["region"].(string), sregion["region"].(string)) {
+					t.Errorf("Subnet region test FAILED. Expected %s, got %s.", sregion["region"].(string), attributes.(map[string]interface{})["region"].(string))
+				}
 			}
 
 		}
