@@ -42,24 +42,24 @@ func TestTerragruntDeployment(t *testing.T) {
 
 	// Check for standard global configuration files
 	if !fileExists(terraformDeploymentOptions.TerraformDir + "/env.yaml") {
-		t.Fail()
+		t.Errorf("Environment configuration file NOT FOUND. Expected file %s\n", terraformDeploymentOptions.TerraformDir+"/env.yaml")
 	}
 	if !fileExists(terraformDeploymentOptions.TerraformDir + "/../local.gcp.yaml") {
 		if !fileExists(terraformDeploymentOptions.TerraformDir + "/../gcp.yaml") {
-			t.Fail()
+			t.Errorf("Platform configuration file NOT FOUND. Expected file %s\n", terraformDeploymentOptions.TerraformDir+"/../[local.]gcp.yaml")
 		}
 	}
 	if !fileExists(terraformDeploymentOptions.TerraformDir + "/reg-multi/region.yaml") {
-		t.Fail()
+		t.Errorf("Region configuration file NOT FOUND. Expected file %s\n", terraformDeploymentOptions.TerraformDir+"/reg-multi/region.yaml")
 	}
 	if !fileExists(terraformDeploymentOptions.TerraformDir + "/reg-primary/region.yaml") {
-		t.Fail()
+		t.Errorf("Region configuration file NOT FOUND. Expected file %s\n", terraformDeploymentOptions.TerraformDir+"/reg-primary/region.yaml")
 	}
 	if !fileExists(terraformDeploymentOptions.TerraformDir + "/reg-secondary/region.yaml") {
-		t.Fail()
+		t.Errorf("Region configuration file NOT FOUND. Expected file %s\n", terraformDeploymentOptions.TerraformDir+"/reg-secondary/region.yaml")
 	}
 	if !fileExists(terraformDeploymentOptions.TerraformDir + "/versions.yaml") {
-		t.Fail()
+		t.Errorf("Version configuration file NOT FOUND. Expected file %s\n", terraformDeploymentOptions.TerraformDir+"/versions.yaml")
 	}
 
 	// Define modules
@@ -91,93 +91,93 @@ func TestTerragruntDeployment(t *testing.T) {
 
 		// Check for standard files
 		if !fileExists(terraformOptions.TerraformDir + "/inputs.yaml") {
-			t.Fail()
+			t.Errorf("Module inputs file NOT FOUND. Expected file %s\n", terraformOptions.TerraformDir+"/inputs.yaml")
 		}
 		if !fileExists(terraformOptions.TerraformDir + "/remotestate.tf") {
-			t.Fail()
+			t.Errorf("Remotestate configuration file NOT FOUND. Expected file %s\n", terraformOptions.TerraformDir+"/remotestate.tf")
 		}
 		if !fileExists(terraformOptions.TerraformDir + "/terragrunt.hcl") {
-			t.Fail()
+			t.Errorf("Module configuration file NOT FOUND. Expected file %s\n", terraformOptions.TerraformDir+"/terragrunt.hcl")
 		}
 	}
 
 	// Read and store the env.yaml
 	yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/env.yaml")
 	if err != nil {
-		t.Fail()
+		t.Errorf("Environment configuration file NOT LOADED. Expected env.yaml to be readable.")
 	}
 
 	env := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &env)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Environment configuration file NOT LOADED. Expected env.yaml to be in YAML format.")
 	}
 
 	// Read and store the gcp.yaml
 	if fileExists(terraformDeploymentOptions.TerraformDir + "/../local.gcp.yaml") {
 		yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/../local.gcp.yaml")
 		if err != nil {
-			t.Fail()
+			t.Errorf("Platform configuration file NOT LOADED. Expected local.gcp.yaml to be readable.")
 		}
 	} else {
 		yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/../gcp.yaml")
 		if err != nil {
-			t.Fail()
+			t.Errorf("Platform configuration file NOT LOADED. Expected gcp.yaml to be readable.")
 		}
 	}
 
 	platform := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &platform)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Platform configuration file NOT LOADED. Expected [local.]gcp.yaml to be in YAML format.")
 	}
 
 	// Read and store the reg-multi/region.yaml
 	yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/reg-multi/region.yaml")
 	if err != nil {
-		t.Fail()
+		t.Errorf("Region configuration file NOT LOADED. Expected reg-multi/region.yaml to be readable.")
 	}
 
 	mregion := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &mregion)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Region configuration file NOT LOADED. Expected reg-multi/region.yaml to be in YAML format.")
 	}
 
 	// Read and store the reg-primary/region.yaml
 	yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/reg-primary/region.yaml")
 	if err != nil {
-		t.Fail()
+		t.Errorf("Region configuration file NOT LOADED. Expected reg-primary/region.yaml to be readable.")
 	}
 
 	pregion := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &pregion)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Region configuration file NOT LOADED. Expected reg-multi/region.yaml to be in YAML format.")
 	}
 
 	// Read and store the reg-secondary/region.yaml
 	yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/reg-secondary/region.yaml")
 	if err != nil {
-		t.Fail()
+		t.Errorf("Region configuration file NOT LOADED. Expected reg-secondary/region.yaml to be readable.")
 	}
 
 	sregion := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &sregion)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Region configuration file NOT LOADED. Expected reg-multi/region.yaml to be in YAML format.")
 	}
 
 	// Read and store the versions.yaml
 	yfile, err = os.ReadFile(terraformDeploymentOptions.TerraformDir + "/versions.yaml")
 	if err != nil {
-		t.Fail()
+		t.Errorf("Version configuration file NOT LOADED. Expected versions.yaml to be readable.")
 	}
 
 	versions := make(map[string]interface{})
 	err = yaml.Unmarshal(yfile, &versions)
 	if err != nil {
-		t.Fail()
+		t.Errorf("Version configuration file NOT LOADED. Expected versions.yaml to be in YAML format.")
 	}
 
 	// Clean up after ourselves if flag is set
@@ -193,7 +193,7 @@ func TestTerragruntDeployment(t *testing.T) {
 			TerraformBinary: binary,
 		})
 
-		fmt.Printf("Testing module in %s\n", moddirs[module])
+		t.Logf("Testing module in %s\n", moddirs[module])
 
 		// Read the provider output and verify configured version
 		providers := terraform.RunTerraformCommand(t, terraformOptions, terraform.FormatArgs(terraformOptions, "providers")...)
@@ -202,30 +202,34 @@ func TestTerragruntDeployment(t *testing.T) {
 		// Read the inputs.yaml
 		yfile, err := os.ReadFile(terraformOptions.TerraformDir + "/inputs.yaml")
 		if err != nil {
-			t.Fail()
+			t.Errorf("Inputs file NOT LOADED. Expected inputs.yaml to be readable.")
 		}
 
 		inputs := make(map[string]interface{})
 		err = yaml.Unmarshal(yfile, &inputs)
 		if err != nil {
-			t.Fail()
+			t.Errorf("Inputs file NOT LOADED. Expected inputs.yaml to be in YAML format.")
 		}
 
 		// Read the terragrunt.hcl
 		hclfile, err := os.ReadFile(terraformOptions.TerraformDir + "/terragrunt.hcl")
 		if err != nil {
-			t.Fail()
+			t.Errorf("Terragrunt configuration file NOT LOADED. Expected terragrunt.hcl to be readable.")
 		}
 
 		hclstring := string(hclfile)
 
 		// Make sure the path referes to the correct parent hcl file
-		assert.Contains(t, hclstring, "path = find_in_parent_folders(\"example_terragrunt.hcl\")")
+		if !assert.Contains(t, hclstring, "path = find_in_parent_folders(\"example_terragrunt.hcl\")") {
+			t.Errorf("Terragrunt parent configuration test FAILED. Expected path to parent HCL (example_terragrunt.hcl) to be configured.")
+		}
 
 		// Collect the outputs
 		outputs := terraform.OutputAll(t, terraformOptions)
 
-		assert.NotEmpty(t, outputs)
+		if !assert.NotEmpty(t, outputs) {
+			t.Errorf("Output test FAILED. Expected terragrunt output to be not empty.")
+		}
 
 		// Add module-specific tests below
 		// Remember that we're in a loop, so group tests by module name (modules range keys)
@@ -246,9 +250,6 @@ func TestTerragruntDeployment(t *testing.T) {
 
 		// Example folder module
 		case "0-exampleFolder":
-			// Log module entrypoint
-			t.Logf("Testing module in %s\n", moddirs[module])
-
 			// Make sure that prevent_destroy is set to false
 			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
 				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
@@ -256,46 +257,125 @@ func TestTerragruntDeployment(t *testing.T) {
 
 			// Make sure that the folder count matches
 			if !assert.Equal(t, len(inputs["names"].([]interface{})), len(outputs["names_list"].([]interface{}))) {
-				t.Errorf("Folder count test FAILED. Expected %d, got %d", len(inputs["names"].([]interface{})), len(outputs["names_list"].([]interface{})))
+				t.Errorf("Folder count test FAILED. Expected %d, got %d.", len(inputs["names"].([]interface{})), len(outputs["names_list"].([]interface{})))
 			}
 
 			// Make sure that all folder names contain prefix, environment and a configured name
 			for _, n := range inputs["names"].([]interface{}) {
 				name := fmt.Sprintf("%s-%s-%s", platform["prefix"].(string), env["environment"].(string), n)
 				if !assert.Contains(t, outputs["names_list"].([]interface{}), name) {
-					t.Errorf("Folder name test FAILED. Expected %s to contain %s", outputs["names_list"].([]interface{}), name)
+					t.Errorf("Folder name test FAILED. Expected %s, to contain %s.", outputs["names_list"].([]interface{}), name)
 				}
 			}
 
 		// Example project module
 		case "1-exampleProject":
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure the project name contains prefix, environment and a configured name
+			name := fmt.Sprintf("%s-%s-%s", platform["prefix"].(string), env["environment"].(string), inputs["project_name"].(string))
+			if !assert.Equal(t, outputs["project_name"].(string), name) {
+				t.Errorf("Project name test FAILED. Expected %s, got %s.", name, outputs["project_name"].(string))
+			}
+
+			// Make sure that the project has a random id assigned, if configured
+			if inputs["random_project_id"].(bool) {
+				if !assert.Equal(t, len(outputs["project_id"].(string)), len(name)+5) {
+					t.Errorf("Project random id test FAILED. Expected project_id %s to have random characters appended.", outputs["project_id"].(string))
+				}
+			}
+
+			// Make sure that the API count matches
+			if !assert.Equal(t, len(inputs["activate_apis"].([]interface{})), len(outputs["enabled_apis"].([]interface{}))) {
+				t.Errorf("Enabled API count test FAILED. Expected %d, got %d.", len(inputs["activate_apis"].([]interface{})), len(outputs["enabled_apis"].([]interface{})))
+			}
+
+			// Make sure that all configured APIs are enabled, actually
+			for _, api := range inputs["activate_apis"].([]interface{}) {
+				if !assert.Contains(t, outputs["enabled_apis"].([]interface{}), api) {
+					t.Errorf("Enabled APIs test FAILED. Expected %s to contain %s.", outputs["enabled_apis"].([]interface{}), api)
+				}
+			}
 
 		// Example audit config module
 		case "2-exampleAuditConfig":
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the audit log config implements the proper auditing for all services
+			audit_cfg := map[string]bool{
+				"ADMIN_READ": false,
+				"DATA_READ":  false,
+				"DATA_WRITE": false,
+			}
+			for _, obj := range outputs["audit_log_config"].([]interface{}) {
+				if assert.Equal(t, obj.(map[string]interface{})["service"].(string), "allServices") {
+					switch obj.(map[string]interface{})["log_type"].(string) {
+
+					case "ADMIN_READ":
+						audit_cfg["ADMIN_READ"] = true
+					case "DATA_READ":
+						audit_cfg["DATA_READ"] = true
+					case "DATA_WRITE":
+						audit_cfg["DATA_WRITE"] = true
+
+					}
+				}
+			}
+			for k, b := range audit_cfg {
+				if !assert.True(t, b) {
+					t.Errorf("Audit configuration test FAILED. Expected log_type: %s to be configured for allServices, got %t.", k, b)
+				}
+			}
 
 		// Example storage bucket module
 		case "2-exampleStorageBucket":
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure the bucket name contains prefix, environment and a configured name
+			name := fmt.Sprintf("%s-%s-%s", platform["prefix"].(string), env["environment"].(string), inputs["name"].(string))
+			if !assert.Equal(t, outputs["bucket"].(map[string]interface{})["name"].(string), name) {
+				t.Errorf("Bucket name test FAILED. Expected %s, got %s.", name, outputs["bucket"].(map[string]interface{})["name"].(string))
+			}
+
+			// Make sure the bucket is deployed in the correct location
+			if !assert.Equal(t, outputs["bucket"].(map[string]interface{})["location"].(string), mregion["location"].(string)) {
+				t.Errorf("Bucket location test FAILED. Expected %s, got %s.", mregion["location"].(string), outputs["bucket"].(map[string]interface{})["location"].(string))
+			}
+
+			// Make sure versioning is correctly configured
+			if !assert.Equal(t, outputs["bucket"].(map[string]interface{})["versioning"].([]interface{})[0].(map[string]interface{})["enabled"].(bool), inputs["versioning"].(bool)) {
+				t.Errorf("Bucket versioning test FAILED. Expected %t, got %t.", inputs["versioning"].(bool), outputs["bucket"].(map[string]interface{})["versioning"].([]interface{})[0].(map[string]interface{})["enabled"].(bool))
+			}
 
 		// Private network module
 		case "2-privateNetwork":
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
 
 		// Primary private subnet module
 		case "3-primaryPrivateSubnet":
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
 
 		// Secondary private subnet module
 		case "3-secondaryPrivateSubnet":
 			// Make sure that prevent_destroy is set to false
-			assert.Contains(t, hclstring, "prevent_destroy = false")
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
 
 		}
 	}
