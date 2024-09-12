@@ -22,6 +22,8 @@ terraform {
 
 inputs = {
   names  = [for name in local.inputs.names: format("%s-%s", local.env.environment, name)]
-  parent = format("%s/%s", local.platform.parent_type, local.platform.parent_id)
+  parent = format("%s/%s",
+                  coalesce(local.inputs.parent.type, local.platform.parent.type),
+                  coalesce(local.inputs.parent.id, local.platform.parent.id))
   prefix = try(local.platform.prefix, null)
 }
