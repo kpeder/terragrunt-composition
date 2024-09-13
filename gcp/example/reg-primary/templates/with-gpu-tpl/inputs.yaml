@@ -1,0 +1,27 @@
+---
+auto_delete: false
+description: "Instance template with NVidia T4 GPU, 16GB GDDR6"
+disk_size_gb: "256"
+disk_type: "pd-ssd"
+gpu:
+  count: 1
+  type: "nvidia-tesla-t4"
+instance_description: "Instance with NVidia T4 GPU, 16GB GDDR6"
+labels: {}
+machine_type: "n1-standard-4"
+name_prefix: "n1-standard-with-t4-gpu"
+service_account:
+  email: ""
+  scopes:
+    - default
+    - userinfo-email
+source_image:
+  image: ""
+  family: "ubuntu-2204-lts"
+  project: "ubuntu-os-cloud"
+spot: true
+startup_script: |
+  #!/bin/bash
+  apt-get install -y python3-pip
+
+subnetwork: "primary-a"
