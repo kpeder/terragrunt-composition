@@ -1,0 +1,12 @@
+---
+description: "Private cloud router with NAT Gateways."
+log_config:
+  enable: true
+  filter: "ALL"
+name: "private"
+nat: false
+source_nat_ranges: "LIST_OF_SUBNETWORKS"
+source_subnet_ranges:
+  - "PRIMARY_IP_RANGE"
+source_subnets:
+  - "secondary-a"
