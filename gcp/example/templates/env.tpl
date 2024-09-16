@@ -24,14 +24,14 @@ dependencies:
     network_id: "PREFIX-ENVIRONMENT-private"
     project_id: "PREFIX-ENVIRONMENT-example"
 
-  primary_subnet_dependency_path: "reg-primary/subnets/private"
-  primary_subnet_mock_outputs:
+  primary_subnets_dependency_path: "reg-primary/subnets/private"
+  primary_subnets_mock_outputs:
     subnets:
       us-east1/primary-a:
         id: "projects/PREFIX-ENVIRONMENT-example/regions/PREGION/subnetworks/primary-a"
 
-  secondary_subnet_dependency_path: "reg-secondary/subnets/private"
-  secondary_subnet_mock_outputs:
+  secondary_subnets_dependency_path: "reg-secondary/subnets/private"
+  secondary_subnets_mock_outputs:
     subnets:
       us-east1/secondary-a:
         id: "projects/PREFIX-ENVIRONMENT-example/regions/SREGION/subnetworks/secondary-a"

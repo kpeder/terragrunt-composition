@@ -24,9 +24,9 @@ dependency "example_project" {
   mock_outputs_allowed_terraform_commands = ["init", "plan", "validate"]
 }
 
-dependency "primary_subnet" {
-  config_path  = find_in_parent_folders(local.env.dependencies.primary_subnet_dependency_path)
-  mock_outputs = local.env.dependencies.primary_subnet_mock_outputs
+dependency "primary_subnets" {
+  config_path  = find_in_parent_folders(local.env.dependencies.primary_subnets_dependency_path)
+  mock_outputs = local.env.dependencies.primary_subnets_mock_outputs
 
   mock_outputs_allowed_terraform_commands = ["init", "plan", "validate"]
 }
@@ -56,5 +56,5 @@ inputs = {
   source_image_project = local.inputs.source_image.project
   spot                 = local.inputs.spot
   startup_script       = local.inputs.startup_script
-  subnetwork           = dependency.primary_subnet.outputs.subnets[format("%s/%s", local.region.region, local.inputs.subnetwork)].id
+  subnetwork           = dependency.primary_subnets.outputs.subnets[format("%s/%s", local.region.region, local.inputs.subnetwork)].id
 }
