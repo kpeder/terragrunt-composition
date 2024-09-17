@@ -72,6 +72,8 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["2-privateNetwork"] = "../global/networks/private"
 	moddirs["3-primaryPrivateSubnet"] = "../reg-primary/subnets/private"
 	moddirs["3-secondaryPrivateSubnet"] = "../reg-secondary/subnets/private"
+	moddirs["4-instanceTemplateWithGPU"] = "../reg-primary/templates/with-gpu-tpl"
+	moddirs["4-instanceTemplateSQLServer"] = "../reg-primary/templates/sql-server-tpl"
 
 	// Maps are unsorted, so sort the keys to process the modules in order
 	modkeys := make([]string, 0, len(moddirs))
@@ -446,6 +448,39 @@ func TestTerragruntDeployment(t *testing.T) {
 				}
 			}
 
+		// Instance template with GPU
+		case "4-instanceTemplateWithGPU":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the template is deployed to the correct project
+			if !assert.Contains(t, outputs["self_link"].(string), project) {
+				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), project)
+			}
+
+			// Make sure that the name prefix is correct
+			if !assert.Contains(t, outputs["self_link"].(string), inputs["name_prefix"].(string)) {
+				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), inputs["name_prefix"].(string))
+			}
+
+		// Instance template for SQL Server
+		case "4-instanceTemplateSQLServer":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the template is deployed to the correct project
+			if !assert.Contains(t, outputs["self_link"].(string), project) {
+				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), project)
+			}
+
+			// Make sure that the name prefix is correct
+			if !assert.Contains(t, outputs["self_link"].(string), inputs["name_prefix"].(string)) {
+				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), inputs["name_prefix"].(string))
+			}
 		}
 	}
 }

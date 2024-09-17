@@ -82,10 +82,13 @@ cp templates/region.tpl reg-secondary/region.yaml
 
 sed -i -e "s:ENVIRONMENT:${ENVIRONMENT}:g" env.yaml
 sed -i -e "s:MREGION:${MREGION}:g" reg-multi/region.yaml
+sed -i -e "s:MREGION:${MREGION}:g" env.yaml
 sed -i -e "s:OWNER:${OWNER}:g" env.yaml
 sed -i -e "s:PREFIX:${PREFIX}:g" env.yaml
 sed -i -e "s:REGION:${PREGION}:g" reg-primary/region.yaml
+sed -i -e "s:PREGION:${PREGION}:g" env.yaml
 sed -i -e "s:ZONE:a:g" reg-primary/region.yaml
 sed -i -e "s:REGION:${SREGION}:g" reg-secondary/region.yaml
+sed -i -e "s:SREGION:${SREGION}:g" env.yaml
 sed -i -e "s:ZONE:a:g" reg-secondary/region.yaml
 sed -i -e "s:TEAM:${TEAM}:g" env.yaml
