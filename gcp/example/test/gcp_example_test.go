@@ -74,6 +74,8 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["3-secondaryPrivateSubnet"] = "../reg-secondary/subnets/private"
 	moddirs["4-instanceTemplateWithGPU"] = "../reg-primary/templates/with-gpu-tpl"
 	moddirs["4-instanceTemplateSQLServer"] = "../reg-primary/templates/sql-server-tpl"
+	moddirs["4-primaryPrivateRouter"] = "../reg-primary/routers/private"
+	moddirs["4-secondaryPrivateRouter"] = "../reg-secondary/routers/private"
 
 	// Maps are unsorted, so sort the keys to process the modules in order
 	modkeys := make([]string, 0, len(moddirs))
@@ -481,6 +483,73 @@ func TestTerragruntDeployment(t *testing.T) {
 			if !assert.Contains(t, outputs["self_link"].(string), inputs["name_prefix"].(string)) {
 				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), inputs["name_prefix"].(string))
 			}
+
+		// Primary private router module
+		case "4-primaryPrivateRouter":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// It belongs to the correct VPC network
+			if !assert.Contains(t, outputs["router"].(map[string]interface{})["network"].(string), network) {
+				t.Errorf("Parent network test FAILED for router %s. Expected %s to contain %s.", outputs["router"].(map[string]interface{})["name"].(string), outputs["router"].(map[string]interface{})["network"].(string), network)
+			}
+
+			// It is correctly named
+			if !assert.Equal(t, pregion["region"].(string)+"-"+inputs["name"].(string), outputs["router"].(map[string]interface{})["name"].(string)) {
+				t.Errorf("Router name test FAILED. Expected %s, got %s.", pregion["region"].(string)+inputs["name"].(string), outputs["router"].(map[string]interface{})["name"].(string))
+			}
+
+			// It is deployed to the correct region
+			if !assert.Equal(t, pregion["region"].(string), outputs["router"].(map[string]interface{})["region"].(string)) {
+				t.Errorf("Router region test FAILED. Expected %s, got %s.", pregion["region"].(string), outputs["router"].(map[string]interface{})["region"].(string))
+			}
+
+			// Its NAT configuration is valid
+			if inputs["nat"].(bool) {
+				if !assert.NotEmpty(t, outputs["nat"].(map[string]interface{})) {
+					t.Errorf("NAT configuration test FAILED. Expected NAT configuration to be applied, got %v.", outputs["nat"].(map[string]interface{}))
+				}
+			} else {
+				if !assert.Empty(t, outputs["nat"].(map[string]interface{})) {
+					t.Errorf("NAT configuration test FAILED. Expected NAT configuration to be empty, got\n %v\n", outputs["nat"].(map[string]interface{}))
+				}
+			}
+
+		// Secondary private router module
+		case "4-secondaryPrivateRouter":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// It belongs to the correct VPC network
+			if !assert.Contains(t, outputs["router"].(map[string]interface{})["network"].(string), network) {
+				t.Errorf("Parent network test FAILED for router %s. Expected %s to contain %s.", outputs["router"].(map[string]interface{})["name"].(string), outputs["router"].(map[string]interface{})["network"].(string), network)
+			}
+
+			// It is correctly named
+			if !assert.Equal(t, sregion["region"].(string)+"-"+inputs["name"].(string), outputs["router"].(map[string]interface{})["name"].(string)) {
+				t.Errorf("Router name test FAILED. Expected %s, got %s.", sregion["region"].(string)+inputs["name"].(string), outputs["router"].(map[string]interface{})["name"].(string))
+			}
+
+			// It is deployed to the correct region
+			if !assert.Equal(t, sregion["region"].(string), outputs["router"].(map[string]interface{})["region"].(string)) {
+				t.Errorf("Router region test FAILED. Expected %s, got %s.", sregion["region"].(string), outputs["router"].(map[string]interface{})["region"].(string))
+			}
+
+			// Its NAT configuration is valid
+			if inputs["nat"].(bool) {
+				if !assert.NotEmpty(t, outputs["nat"].(map[string]interface{})) {
+					t.Errorf("NAT configuration test FAILED. Expected NAT configuration to be applied, got %v.", outputs["nat"].(map[string]interface{}))
+				}
+			} else {
+				if !assert.Empty(t, outputs["nat"].(map[string]interface{})) {
+					t.Errorf("NAT configuration test FAILED. Expected NAT configuration to be empty, got\n %v\n", outputs["nat"].(map[string]interface{}))
+				}
+			}
+
 		}
 	}
 }
