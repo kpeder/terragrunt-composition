@@ -44,7 +44,7 @@ inputs = {
   instance_description = local.inputs.instance_description
   labels               = merge(local.env.labels, local.inputs.labels)
   machine_type         = local.inputs.machine_type
-  name_prefix          = local.inputs.name_prefix
+  name_prefix          = format("%s-%s-%s", local.platform.prefix, local.env.environment, local.inputs.name_prefix)
   project_id           = dependency.example_project.outputs.project_id
   region               = local.region.region
   service_account      = {
@@ -57,4 +57,5 @@ inputs = {
   spot                 = local.inputs.spot
   startup_script       = local.inputs.startup_script
   subnetwork           = dependency.primary_subnets.outputs.subnets[format("%s/%s", local.region.region, local.inputs.subnetwork)].id
+  tags                 = local.inputs.tags
 }

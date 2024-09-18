@@ -1,7 +1,7 @@
 ---
 auto_delete: false
 description: "Instance template with NVidia T4 GPU, 16GB GDDR6"
-disk_size_gb: "256"
+disk_size_gb: "124"
 disk_type: "pd-ssd"
 gpu:
   count: 1
@@ -13,8 +13,7 @@ name_prefix: "n1-standard-with-t4-gpu"
 service_account:
   email: ""
   scopes:
-    - default
-    - userinfo-email
+    - cloud-platform
 source_image:
   image: ""
   family: "ubuntu-2204-lts"
@@ -25,3 +24,5 @@ startup_script: |
   apt-get install -y python3-pip
 
 subnetwork: "primary-a"
+tags:
+  - "iap-ssh-in"
