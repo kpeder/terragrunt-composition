@@ -1,0 +1,38 @@
+---
+rules:
+  - name: "allow-iap-rdp-in"
+    description: "Inbound access via proxy service."
+    direction: "INGRESS"
+    disabled: false
+    enable_logging: true
+    log_config:
+      metadata: "INCLUDE_ALL_METADATA"
+    ports: ["3389"]
+    priority: 100
+    protocol: "tcp"
+    source_ranges: ["35.235.240.0/20"]
+    target_tags: ["iap-rdp-in"]
+  - name: "allow-iap-ssh-in"
+    description: "Inbound access via proxy service."
+    direction: "INGRESS"
+    disabled: false
+    enable_logging: true
+    log_config:
+      metadata: "INCLUDE_ALL_METADATA"
+    ports: ["22"]
+    priority: 100
+    protocol: "tcp"
+    source_ranges: ["35.235.240.0/20"]
+    target_tags: ["iap-ssh-in"]
+  - name: "allow-sql-server-in"
+    description: "Inbound access to SQL Server."
+    direction: "INGRESS"
+    disabled: false
+    enable_logging: true
+    log_config:
+      metadata: "INCLUDE_ALL_METADATA"
+    ports: ["1433"]
+    priority: 100
+    protocol: "tcp"
+    source_ranges: []
+    target_tags: ["sql-server-in"]
