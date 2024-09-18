@@ -2,4 +2,4 @@
 region: "us-east1"
 location: "us-east1"
 storage_class: "STANDARD"
-zone_preference: "a"
+zone_preference: "c"
