@@ -31,7 +31,7 @@ gcp_example_configure:
 
 .PHONY: gcp_example_deploy
 gcp_example_deploy: gcp_example_configure gcp_example_init
-	@cd gcp/example/test && go test -v
+	@cd gcp/example/test && go test -v -timeout 1200s
 
 .PHONY: gcp_example_init
 gcp_example_init: gcp_example_configure
@@ -54,4 +54,4 @@ gcp_example_plan: gcp_example_configure gcp_example_init
 
 .PHONY: gcp_example_test
 gcp_example_test: gcp_example_configure gcp_example_lint
-	@cd gcp/example/test && go test -v -destroy
+	@cd gcp/example/test && go test -v -destroy -timeout 1800s

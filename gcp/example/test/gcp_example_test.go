@@ -73,7 +73,7 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["3-primaryPrivateSubnet"] = "../reg-primary/subnets/private"
 	moddirs["3-secondaryPrivateSubnet"] = "../reg-secondary/subnets/private"
 	moddirs["4-instanceTemplateWithGPU"] = "../reg-primary/templates/with-gpu-tpl"
-	moddirs["4-instanceTemplateSQLServer"] = "../reg-primary/templates/sql-server-tpl"
+	moddirs["4-instanceTemplateWithSQL"] = "../reg-primary/templates/with-sql-tpl"
 	moddirs["4-primaryPrivateRouter"] = "../reg-primary/routers/private"
 	moddirs["4-secondaryPrivateRouter"] = "../reg-secondary/routers/private"
 
@@ -468,7 +468,7 @@ func TestTerragruntDeployment(t *testing.T) {
 			}
 
 		// Instance template for SQL Server
-		case "4-instanceTemplateSQLServer":
+		case "4-instanceTemplateWithSQL":
 			// Make sure that prevent_destroy is set to false
 			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
 				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
