@@ -24,6 +24,18 @@ rules:
     protocol: "tcp"
     source_ranges: ["35.235.240.0/20"]
     target_tags: ["iap-ssh-in"]
+  - name: "allow-https-in"
+    description: "Inbound access to HTTPS."
+    direction: "INGRESS"
+    disabled: false
+    enable_logging: true
+    log_config:
+      metadata: "INCLUDE_ALL_METADATA"
+    ports: ["443"]
+    priority: 100
+    protocol: "tcp"
+    source_ranges: []
+    target_tags: ["https-in"]
   - name: "allow-sql-server-in"
     description: "Inbound access to SQL Server."
     direction: "INGRESS"

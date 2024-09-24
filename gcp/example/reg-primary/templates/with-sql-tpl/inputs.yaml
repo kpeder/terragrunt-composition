@@ -23,4 +23,5 @@ startup_script: |
 subnetwork: "primary-a"
 tags:
   - "iap-rdp-in"
+  - "https-in"
   - "sql-server-in"
