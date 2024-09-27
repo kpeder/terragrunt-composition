@@ -31,6 +31,8 @@ func TestTerragruntDeployment(t *testing.T) {
 	// Non-local vars to evaluate state between modules
 	var network string
 	var project string
+	var withGPUTemplateLink string
+	var withSQLTemplateLink string
 
 	// Reusable vars for unmarshalling YAML files
 	var err error
@@ -76,6 +78,8 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["4-instanceTemplateWithSQL"] = "../reg-primary/templates/with-sql-tpl"
 	moddirs["4-primaryPrivateRouter"] = "../reg-primary/routers/private"
 	moddirs["4-secondaryPrivateRouter"] = "../reg-secondary/routers/private"
+	moddirs["5-instanceWithGPU"] = "../reg-primary/instances/with-gpu-inst"
+	moddirs["5-instanceWithSQL"] = "../reg-primary/instances/with-sql-inst"
 
 	// Maps are unsorted, so sort the keys to process the modules in order
 	modkeys := make([]string, 0, len(moddirs))
@@ -467,6 +471,9 @@ func TestTerragruntDeployment(t *testing.T) {
 				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), inputs["name_prefix"].(string))
 			}
 
+			// Store the self link
+			withGPUTemplateLink = outputs["self_link"].(string)
+
 		// Instance template for SQL Server
 		case "4-instanceTemplateWithSQL":
 			// Make sure that prevent_destroy is set to false
@@ -481,8 +488,18 @@ func TestTerragruntDeployment(t *testing.T) {
 
 			// Make sure that the name prefix is correct
 			if !assert.Contains(t, outputs["self_link"].(string), inputs["name_prefix"].(string)) {
-				t.Errorf("Parent project test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), inputs["name_prefix"].(string))
+				t.Errorf("Name prefix test FAILED. Expected %s to contain %s.", outputs["self_link"].(string), inputs["name_prefix"].(string))
 			}
+
+			// Make sure that the network tags are correctly set
+			for _, tag := range inputs["tags"].([]interface{}) {
+				if !assert.Contains(t, outputs["tags"].([]interface{}), tag.(string)) {
+					t.Errorf("Network tag test FAILED. Expected %v to contain %s.", outputs["tags"].([]interface{}), tag.(string))
+				}
+			}
+
+			// Store the self link
+			withSQLTemplateLink = outputs["self_link"].(string)
 
 		// Primary private router module
 		case "4-primaryPrivateRouter":
@@ -547,6 +564,74 @@ func TestTerragruntDeployment(t *testing.T) {
 			} else {
 				if !assert.Empty(t, outputs["nat"].(map[string]interface{})) {
 					t.Errorf("NAT configuration test FAILED. Expected NAT configuration to be empty, got\n %v\n", outputs["nat"].(map[string]interface{}))
+				}
+			}
+
+		// Instance template for SQL Server
+		case "5-instanceWithGPU":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the instance count is correct
+			if !assert.Equal(t, len(outputs["instances_details"].([]interface{})), inputs["num_instances"]) {
+				t.Errorf("Instance count test FAILED. Expected %d instances to be deployed. Got %d.", inputs["num_instances"].(int), len(outputs["instances_details"].([]interface{})))
+			}
+
+			// If there's an instance deployed
+			if inputs["num_instances"].(int) > 0 {
+
+				for _, instance := range outputs["instances_details"].([]interface{}) {
+					// Make sure that the instance is deployed to the correct project
+					if !assert.Equal(t, instance.(map[string]interface{})["project"].(string), project) {
+						t.Errorf("Parent project test FAILED. Expected %s to contain %s.", instance.(map[string]interface{})["project"].(string), project)
+					}
+
+					// Make sure that the instance name is correct
+					if !assert.Contains(t, instance.(map[string]interface{})["self_link"].(string), inputs["name"].(string)) {
+						t.Errorf("Name test FAILED. Expected %s to contain %s.", instance.(map[string]interface{})["self_link"].(string), inputs["name"].(string))
+					}
+
+					// Make sure that the instance is linked to the correct template
+					if !assert.Equal(t, instance.(map[string]interface{})["source_instance_template"], withGPUTemplateLink) {
+						t.Errorf("Template test FAILED. Expected %s to be equal to %s.", instance.(map[string]interface{})["source_instance_template"].(string), withGPUTemplateLink)
+					}
+
+				}
+			}
+
+		// Instance template for SQL Server
+		case "5-instanceWithSQL":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the instance count is correct
+			if !assert.Equal(t, len(outputs["instances_details"].([]interface{})), inputs["num_instances"]) {
+				t.Errorf("Instance count test FAILED. Expected %d instances to be deployed. Got %d.", inputs["num_instances"].(int), len(outputs["instances_details"].([]interface{})))
+			}
+
+			// If there's an instance deployed
+			if inputs["num_instances"].(int) > 0 {
+
+				for _, instance := range outputs["instances_details"].([]interface{}) {
+					// Make sure that the instance is deployed to the correct project
+					if !assert.Equal(t, instance.(map[string]interface{})["project"].(string), project) {
+						t.Errorf("Parent project test FAILED. Expected %s to contain %s.", instance.(map[string]interface{})["project"].(string), project)
+					}
+
+					// Make sure that the instance name is correct
+					if !assert.Contains(t, instance.(map[string]interface{})["self_link"].(string), inputs["name"].(string)) {
+						t.Errorf("Name test FAILED. Expected %s to contain %s.", instance.(map[string]interface{})["self_link"].(string), inputs["name"].(string))
+					}
+
+					// Make sure that the instance is linked to the correct template
+					if !assert.Equal(t, instance.(map[string]interface{})["source_instance_template"], withSQLTemplateLink) {
+						t.Errorf("Template test FAILED. Expected %s to be equal to %s.", instance.(map[string]interface{})["source_instance_template"].(string), withSQLTemplateLink)
+					}
+
 				}
 			}
 

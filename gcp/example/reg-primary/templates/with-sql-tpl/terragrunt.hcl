@@ -36,8 +36,12 @@ terraform {
 }
 
 inputs = {
+  additional_disks     = [for disk in local.inputs.additional_disks: merge(
+                            {for k, v in disk: k => v if k != "disk_labels"},
+                            {for k, v in disk: k => merge(local.env.labels, local.inputs.labels, v) if k == "disk_labels" })]
   auto_delete          = local.inputs.auto_delete
   description          = local.inputs.description
+  disk_labels          = merge(local.env.labels, local.inputs.labels, local.inputs.disk_labels)
   disk_size_gb         = local.inputs.disk_size_gb
   disk_type            = local.inputs.disk_type
   gpu                  = local.inputs.gpu
