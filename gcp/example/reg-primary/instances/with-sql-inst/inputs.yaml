@@ -1,3 +1,4 @@
 ---
-name: "sql-server-std"
+add_name_suffix: true
+name: "sqlsvrstd"
 num_instances: 0

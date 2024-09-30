@@ -583,9 +583,12 @@ func TestTerragruntDeployment(t *testing.T) {
 			if inputs["num_instances"].(int) > 0 {
 
 				for _, instance := range outputs["instances_details"].([]interface{}) {
+					// Log the instance name
+					t.Logf("Testing instance %s\n", instance.(map[string]interface{})["self_link"].(string))
+
 					// Make sure that the instance is deployed to the correct project
 					if !assert.Equal(t, instance.(map[string]interface{})["project"].(string), project) {
-						t.Errorf("Parent project test FAILED. Expected %s to contain %s.", instance.(map[string]interface{})["project"].(string), project)
+						t.Errorf("Parent project test FAILED. Expected %s to be equal to %s.", instance.(map[string]interface{})["project"].(string), project)
 					}
 
 					// Make sure that the instance name is correct
@@ -596,6 +599,16 @@ func TestTerragruntDeployment(t *testing.T) {
 					// Make sure that the instance is linked to the correct template
 					if !assert.Equal(t, instance.(map[string]interface{})["source_instance_template"], withGPUTemplateLink) {
 						t.Errorf("Template test FAILED. Expected %s to be equal to %s.", instance.(map[string]interface{})["source_instance_template"].(string), withGPUTemplateLink)
+					}
+
+					// Make sure that the instance is properly provisioned
+					if !assert.Equal(t, "SPOT", instance.(map[string]interface{})["scheduling"].([]interface{})[0].(map[string]interface{})["provisioning_model"].(string)) {
+						t.Errorf("Provisioning test FAILED. Expected provisioning model of instance to be SPOT, got %s.", instance.(map[string]interface{})["scheduling"].([]interface{})[0].(map[string]interface{})["[provisioning_model]"].(string))
+					}
+
+					// Make sure that the instance is in the correct state
+					if !assert.Equal(t, "RUNNING", instance.(map[string]interface{})["current_status"].(string)) {
+						t.Errorf("Status test FAILED. Expected status of instance to be RUNNING, got %s.", instance.(map[string]interface{})["current_status"].(string))
 					}
 
 				}
@@ -617,9 +630,12 @@ func TestTerragruntDeployment(t *testing.T) {
 			if inputs["num_instances"].(int) > 0 {
 
 				for _, instance := range outputs["instances_details"].([]interface{}) {
+					// Log the instance name
+					t.Logf("Testing instance %s\n", instance.(map[string]interface{})["self_link"].(string))
+
 					// Make sure that the instance is deployed to the correct project
 					if !assert.Equal(t, instance.(map[string]interface{})["project"].(string), project) {
-						t.Errorf("Parent project test FAILED. Expected %s to contain %s.", instance.(map[string]interface{})["project"].(string), project)
+						t.Errorf("Parent project test FAILED. Expected %s to be equal to %s.", instance.(map[string]interface{})["project"].(string), project)
 					}
 
 					// Make sure that the instance name is correct
@@ -630,6 +646,16 @@ func TestTerragruntDeployment(t *testing.T) {
 					// Make sure that the instance is linked to the correct template
 					if !assert.Equal(t, instance.(map[string]interface{})["source_instance_template"], withSQLTemplateLink) {
 						t.Errorf("Template test FAILED. Expected %s to be equal to %s.", instance.(map[string]interface{})["source_instance_template"].(string), withSQLTemplateLink)
+					}
+
+					// Make sure that the instance is properly provisioned
+					if !assert.Equal(t, "SPOT", instance.(map[string]interface{})["scheduling"].([]interface{})[0].(map[string]interface{})["provisioning_model"].(string)) {
+						t.Errorf("Provisioning test FAILED. Expected provisioning model of instance to be SPOT, got %s.", instance.(map[string]interface{})["scheduling"].([]interface{})[0].(map[string]interface{})["[provisioning_model]"].(string))
+					}
+
+					// Make sure that the instance is in the correct state
+					if !assert.Equal(t, "RUNNING", instance.(map[string]interface{})["current_status"].(string)) {
+						t.Errorf("Status test FAILED. Expected status of instance to be RUNNING, got %s.", instance.(map[string]interface{})["current_status"].(string))
 					}
 
 				}

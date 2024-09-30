@@ -29,8 +29,9 @@ terraform {
 }
 
 inputs = {
-  hostname          = local.inputs.name
-  instance_template = dependency.with_sql_template.outputs.self_link
-  num_instances     = local.inputs.num_instances
-  zone              = format("%s-%s", local.region.region, local.region.zone_preference)
+  add_hostname_suffix = local.inputs.add_name_suffix
+  hostname            = local.inputs.name
+  instance_template   = dependency.with_sql_template.outputs.self_link
+  num_instances       = local.inputs.num_instances
+  zone                = format("%s-%s", local.region.region, local.region.zone_preference)
 }
