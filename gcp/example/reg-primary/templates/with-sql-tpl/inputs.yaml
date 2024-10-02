@@ -1,19 +1,19 @@
 ---
-additional_disks:
-  - auto_delete: true
-    boot: false
-    device_name: ""
-    disk_name: "sql-server-data"
-    disk_size_gb: "200"
-    disk_type: "pd-ssd"
-    disk_labels: {}
-    interface: "SCSI"
-    mode: "READ_WRITE"
-    source_image: ""
+additional_disks: []
+  #- auto_delete: true
+  #  boot: false
+  #  device_name: ""
+  #  disk_name: "sql-server-vol"
+  #  disk_size_gb: "200"
+  #  disk_type: "pd-ssd"
+  #  disk_labels: {}
+  #  interface: "SCSI"
+  #  mode: "READ_WRITE"
+  #  source_image: ""
 auto_delete: true
 description: "Instance template with SQL Server 2022"
 disk_labels: {}
-disk_size_gb: "50"
+disk_size_gb: "500"
 disk_type: "pd-ssd"
 gpu: null
 instance_description: "Instance with SQL Server 2022"
