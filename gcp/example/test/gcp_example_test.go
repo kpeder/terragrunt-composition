@@ -70,10 +70,12 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["0-exampleFolder"] = "../global/folders/example"
 	moddirs["1-exampleProject"] = "../global/projects/example"
 	moddirs["2-exampleAuditConfig"] = "../global/audit-configs/example"
+	moddirs["2-exampleMetadata"] = "../global/metadata/example"
 	moddirs["2-exampleStorageBucket"] = "../reg-multi/buckets/example"
 	moddirs["2-privateNetwork"] = "../global/networks/private"
 	moddirs["3-primaryPrivateSubnet"] = "../reg-primary/subnets/private"
 	moddirs["3-secondaryPrivateSubnet"] = "../reg-secondary/subnets/private"
+	moddirs["3-serviceAccountRoles"] = "../global/roles/service-accounts/example"
 	moddirs["4-instanceTemplateWithGPU"] = "../reg-primary/templates/with-gpu-tpl"
 	moddirs["4-instanceTemplateWithSQL"] = "../reg-primary/templates/with-sql-tpl"
 	moddirs["4-primaryPrivateRouter"] = "../reg-primary/routers/private"
@@ -346,6 +348,22 @@ func TestTerragruntDeployment(t *testing.T) {
 				}
 			}
 
+		// Example metadata module
+		case "2-exampleMetadata":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the metadata contains the proper key / value pairs
+			for k, v := range inputs["metadata_items"].(map[string]interface{}) {
+				if !assert.Contains(t, outputs["metadata_items"].(map[string]interface{}), k) {
+					t.Errorf("Metadata configuration test FAILED. Expected metadata_items to contain key %s.", k)
+				} else if !assert.Equal(t, outputs["metadata_items"].(map[string]interface{})[k].(map[string]interface{})["value"].(string), v) {
+					t.Errorf("Metadata configuration test FAILED. Expected metadata key %s to be set to %s.", k, inputs["metadata_items"].(map[string]interface{})[k].(string))
+				}
+			}
+
 		// Example storage bucket module
 		case "2-exampleStorageBucket":
 			// Make sure that prevent_destroy is set to false
@@ -451,6 +469,25 @@ func TestTerragruntDeployment(t *testing.T) {
 				// They are deployed to the correct region
 				if !assert.Equal(t, attributes.(map[string]interface{})["region"].(string), sregion["region"].(string)) {
 					t.Errorf("Subnet region test FAILED. Expected %s, got %s.", sregion["region"].(string), attributes.(map[string]interface{})["region"].(string))
+				}
+			}
+
+		// Service account roles
+		case "3-serviceAccountRoles":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure that the role memberships are deployed to the correct project
+			if !assert.Equal(t, project, outputs["project_id"].(string)) {
+				t.Errorf("Target project test FAILED. Expected %s to equal %s.", outputs["project_id"].(string), project)
+			}
+
+			// Make sure that all the role memberships are created
+			for _, role := range inputs["roles"].([]interface{}) {
+				if !assert.Contains(t, outputs["roles"].(map[string]interface{}), role) {
+					t.Errorf("Role configuration test FAILED. Expected %v to contain %s.", outputs["roles"].(map[string]interface{}), role)
 				}
 			}
 
