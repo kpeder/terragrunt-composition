@@ -1,0 +1,11 @@
+---
+agent_rules:
+  version: "2.51.0"
+  package_state: "installed"
+assignment_id: "ops-agent-windows-10"
+instance_filter:
+  exclusion_labels: []
+  inclusion_labels: []
+  inventories:
+    - os_short_name: "windows"
+      os_version: "10.0.*"
