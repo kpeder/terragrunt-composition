@@ -1,0 +1,4 @@
+---
+metadata_items:
+  enable-guest-attributes: "TRUE"
+  enable-osconfig: "TRUE"
