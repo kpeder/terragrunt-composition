@@ -8,6 +8,7 @@ terraform_install_version: "1.7.4"
 terragrunt_binary_version: "0.55"
 terragrunt_install_version: "0.55.16"
 
+google_module_cloud_ops: "v0.6.0"
 google_module_folder: "v4.0.0"
 google_module_project: "v14.3.0"
 google_module_iam: "v7.7.0"
