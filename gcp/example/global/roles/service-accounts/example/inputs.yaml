@@ -1,0 +1,5 @@
+---
+prefix: "serviceAccount"
+roles:
+  - "roles/monitoring.metricWriter"
+  - "roles/logging.logWriter"
