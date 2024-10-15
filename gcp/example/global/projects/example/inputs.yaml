@@ -8,6 +8,7 @@ activate_apis:
   - "iam.googleapis.com"
   - "iap.googleapis.com"
   - "logging.googleapis.com"
+  - "osconfig.googleapis.com"
   - "monitoring.googleapis.com"
   - "pubsub.googleapis.com"
   - "run.googleapis.com"
