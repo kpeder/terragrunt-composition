@@ -31,6 +31,13 @@ dependency "primary_subnets" {
   mock_outputs_allowed_terraform_commands = ["init", "plan", "validate"]
 }
 
+dependency "secondary_subnets" {
+  config_path  = find_in_parent_folders(local.env.dependencies.secondary_subnets_dependency_path)
+  mock_outputs = local.env.dependencies.secondary_subnets_mock_outputs
+
+  mock_outputs_allowed_terraform_commands = ["init", "plan", "validate"]
+}
+
 terraform {
   source = "git::git@github.com:terraform-google-modules/terraform-google-network//modules/firewall-rules?ref=${local.versions.google_module_network}"
 }
@@ -48,7 +55,7 @@ inputs = {
       enable_logging          = rule["enable_logging"]
       log_config              = rule["log_config"]
       priority                = rule["priority"]
-      source_ranges           = concat(rule["source_ranges"], [for s in dependency.primary_subnets.outputs.subnets: s["ip_cidr_range"]])
+      source_ranges           = concat(rule["source_ranges"], [for s in dependency.primary_subnets.outputs.subnets: s["ip_cidr_range"]], [for s in dependency.secondary_subnets.outputs.subnets: s["ip_cidr_range"]])
       target_tags             = rule["target_tags"]
       allow = [{
         protocol = rule["protocol"]
