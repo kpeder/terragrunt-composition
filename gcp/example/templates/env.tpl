@@ -44,6 +44,10 @@ dependencies:
   with_sql_template_mock_outputs:
     self_link: https://www.googleapis.com/compute/beta/projects/PREFIX-ENVIRONMENT-example/global/instanceTemplates/n1-highmem-8-with-sql-202409161234567800000001
 
+  with_win_template_dependency_path: "reg-secondary/templates/with-win-tpl"
+  with_win_template_mock_outputs:
+    self_link: https://www.googleapis.com/compute/beta/projects/PREFIX-ENVIRONMENT-example/global/instanceTemplates/n1-highmem-4-with-win-202409161234567800000001
+
   with_gpu_instance_dependency_path: "reg-primary/instances/with-gpu-inst"
   with_gpu_instance_mock_outputs:
     instances_self_links:
@@ -53,3 +57,8 @@ dependencies:
   with_sql_instance_mock_outputs:
     instances_self_links:
       - "https://www.googleapis.com/compute/v1/projects/PREFIX-ENVIRONMENT-example/zones/PREGION-a/instances/sqlsvrstd-001"
+
+  with_win_instance_dependency_path: "reg-secondary/instances/with-win-inst"
+  with_win_instance_mock_outputs:
+    instances_self_links:
+      - "https://www.googleapis.com/compute/v1/projects/PREFIX-ENVIRONMENT-example/zones/SREGION-a/instances/winsvrdev-001"
