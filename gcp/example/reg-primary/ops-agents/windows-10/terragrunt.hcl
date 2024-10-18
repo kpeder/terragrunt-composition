@@ -36,7 +36,7 @@ terraform {
 }
 
 inputs = {
-  agent_rules     = local.inputs.agent_rules
+  agents_rule     = local.inputs.agents_rule
   assignment_id   = local.inputs.assignment_id
   instance_filter = local.inputs.instance_filter
   project         = dependency.example_project.outputs.project_id

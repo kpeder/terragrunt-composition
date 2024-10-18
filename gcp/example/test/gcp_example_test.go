@@ -74,6 +74,7 @@ func TestTerragruntDeployment(t *testing.T) {
 	moddirs["2-exampleMetadata"] = "../global/metadata/example"
 	moddirs["2-exampleStorageBucket"] = "../reg-multi/buckets/example"
 	moddirs["2-privateNetwork"] = "../global/networks/private"
+	moddirs["3-primaryWindowsOpsAgents"] = "../reg-primary/ops-agents/windows-10"
 	moddirs["3-primaryPrivateSubnet"] = "../reg-primary/subnets/private"
 	moddirs["3-secondaryPrivateSubnet"] = "../reg-secondary/subnets/private"
 	moddirs["3-serviceAccountRoles"] = "../global/roles/service-accounts/example"
@@ -410,6 +411,38 @@ func TestTerragruntDeployment(t *testing.T) {
 
 			// Store the network id
 			network = outputs["network_id"].(string)
+
+		// Primary Windows Ops Agent module
+		case "3-primaryWindowsOpsAgents":
+			// Make sure that prevent_destroy is set to false
+			if !assert.Contains(t, hclstring, "prevent_destroy = false") {
+				t.Errorf("HCL content test FAILED. Expected \"prevent_destroy = false\", got %s", hclstring)
+			}
+
+			// Make sure the instance filter matches the input
+			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["instance_filter"].([]interface{})[0].(map[string]interface{}), inputs["instance_filter"].(map[string]interface{})) {
+				t.Errorf("Instance filter test FAILED. Expected %v to match %v.", outputs["ops_agent_policy"].(map[string]interface{})["instance_filter"].([]interface{})[0].(map[string]interface{}), inputs["instance_filter"].(map[string]interface{}))
+			}
+
+			// Make sure the location filter is correct
+			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["location"].(string), pregion["region"].(string)+"-"+pregion["zone_preference"].(string)) {
+				t.Errorf("Location test FAILED. Expected zone filter to be %s, got %s.", pregion["region"].(string)+"-"+pregion["zone_preference"].(string), outputs["ops_agent_policy"].(map[string]interface{})["location"].(string))
+			}
+
+			// Make sure the name is correct
+			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["name"].(string), inputs["assignment_id"].(string)) {
+				t.Errorf("Name test FAILED. Expected policy assignment name to be %s, got %s.", inputs["assignment_id"].(string), outputs["ops_agent_policy"].(map[string]interface{})["name"].(string))
+			}
+
+			// Make sure the project is correct
+			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["name"].(string), project) {
+				t.Errorf("Project test FAILED. Expected project to be %s, got %s.", project, outputs["ops_agent_policy"].(map[string]interface{})["project"].(string))
+			}
+
+			// Make sure the rollout succeeded
+			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["rollout_state"].(string), "SUCCEEDED") {
+				t.Errorf("Ops agent rollout test FAILED. Expected rollout state to be %s, got %s.", "SUCCEEDED", outputs["ops_agent_policy"].(map[string]interface{})["rollout_state"].(string))
+			}
 
 		// Primary private subnet module
 		case "3-primaryPrivateSubnet":

@@ -1,9 +1,10 @@
 ---
-agent_rules:
+agents_rule:
   version: "2.51.0"
   package_state: "installed"
 assignment_id: "ops-agent-windows-10"
 instance_filter:
+  all: false
   exclusion_labels: []
   inclusion_labels: []
   inventories:
