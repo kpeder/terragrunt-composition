@@ -420,27 +420,27 @@ func TestTerragruntDeployment(t *testing.T) {
 			}
 
 			// Make sure the instance filter matches the input
-			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["instance_filter"].([]interface{})[0].(map[string]interface{}), inputs["instance_filter"].(map[string]interface{})) {
+			if !assert.Equal(t, inputs["instance_filter"].(map[string]interface{}), outputs["ops_agent_policy"].(map[string]interface{})["instance_filter"].([]interface{})[0].(map[string]interface{})) {
 				t.Errorf("Instance filter test FAILED. Expected %v to match %v.", outputs["ops_agent_policy"].(map[string]interface{})["instance_filter"].([]interface{})[0].(map[string]interface{}), inputs["instance_filter"].(map[string]interface{}))
 			}
 
 			// Make sure the location filter is correct
-			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["location"].(string), pregion["region"].(string)+"-"+pregion["zone_preference"].(string)) {
+			if !assert.Equal(t, pregion["region"].(string)+"-"+pregion["zone_preference"].(string), outputs["ops_agent_policy"].(map[string]interface{})["location"].(string)) {
 				t.Errorf("Location test FAILED. Expected zone filter to be %s, got %s.", pregion["region"].(string)+"-"+pregion["zone_preference"].(string), outputs["ops_agent_policy"].(map[string]interface{})["location"].(string))
 			}
 
 			// Make sure the name is correct
-			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["name"].(string), inputs["assignment_id"].(string)) {
+			if !assert.Equal(t, inputs["assignment_id"].(string), outputs["ops_agent_policy"].(map[string]interface{})["name"].(string)) {
 				t.Errorf("Name test FAILED. Expected policy assignment name to be %s, got %s.", inputs["assignment_id"].(string), outputs["ops_agent_policy"].(map[string]interface{})["name"].(string))
 			}
 
 			// Make sure the project is correct
-			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["name"].(string), project) {
+			if !assert.Equal(t, project, outputs["ops_agent_policy"].(map[string]interface{})["project"].(string)) {
 				t.Errorf("Project test FAILED. Expected project to be %s, got %s.", project, outputs["ops_agent_policy"].(map[string]interface{})["project"].(string))
 			}
 
 			// Make sure the rollout succeeded
-			if !assert.Equal(t, outputs["ops_agent_policy"].(map[string]interface{})["rollout_state"].(string), "SUCCEEDED") {
+			if !assert.Equal(t, "SUCCEEDED", outputs["ops_agent_policy"].(map[string]interface{})["rollout_state"].(string)) {
 				t.Errorf("Ops agent rollout test FAILED. Expected rollout state to be %s, got %s.", "SUCCEEDED", outputs["ops_agent_policy"].(map[string]interface{})["rollout_state"].(string))
 			}
 
