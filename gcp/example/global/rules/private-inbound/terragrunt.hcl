@@ -13,7 +13,6 @@ locals {
   env      = yamldecode(file(find_in_parent_folders("env.yaml")))
   inputs   = yamldecode(file("inputs.yaml"))
   platform = fileexists(find_in_parent_folders("local.gcp.yaml")) ? yamldecode(file(find_in_parent_folders("local.gcp.yaml"))) : yamldecode(file(find_in_parent_folders("gcp.yaml")))
-  region   = yamldecode(file(find_in_parent_folders("reg-multi/region.yaml")))
   versions = yamldecode(file(find_in_parent_folders("versions.yaml")))
 }
 
